@@ -15,7 +15,7 @@ class MyLocalizations {
       'title': 'Numbers',
     },
     'es': {
-      'title': 'Números',
+      'title': 'Reconocedor de números',
     },
   };
 
