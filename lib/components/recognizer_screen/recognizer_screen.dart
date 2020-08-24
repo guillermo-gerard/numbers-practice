@@ -26,10 +26,9 @@ class _RecognizerScreen extends State<RecognizerScreen> {
     super.initState();
     numberRecognizer.loadModel();
     _buildBarChartInfo();
-    () async {
-      await Future.delayed(Duration.zero);
-      _resetLabels(context);
-    }();
+    Future.delayed(Duration.zero, () {
+      this._resetLabels(context);
+    });
   }
 
   @override
@@ -80,16 +79,14 @@ class _RecognizerScreen extends State<RecognizerScreen> {
                             renderBox.globalToLocal(details.globalPosition));
                       });
                     },
-                    onPanEnd: (details) {
-                      setState(() async {
-                        points.add(null);
-                        List predictions =
-                            await numberRecognizer.processCanvasPoints(points);
+                    onPanEnd: (details) async {
+                      points.add(null);
+                      List predictions =
+                          await numberRecognizer.processCanvasPoints(points);
+                      setState(() {
                         print(predictions);
-                        setState(() {
-                          _buildBarChartInfo(recognitions: predictions);
-                          _setLabelsForGuess(predictions.first['label']);
-                        });
+                        _buildBarChartInfo(recognitions: predictions);
+                        _setLabelsForGuess(predictions.first['label']);
                       });
                     },
                     child: ClipRect(
@@ -171,7 +168,9 @@ class _RecognizerScreen extends State<RecognizerScreen> {
     setState(() {
       points = List();
       _buildBarChartInfo();
-      _resetLabels(context);
+      Future.delayed(Duration.zero, () {
+        this._resetLabels(context);
+      });
     });
   }
 

@@ -53,9 +53,10 @@ class HomeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: RecognizerScreen(
-      title: MyLocalizations.of(context).title,
-    ));
+      body: RecognizerScreen(
+        title: MyLocalizations.of(context).title,
+      ),
+    );
   }
 }
 
