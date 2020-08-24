@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:number_trainer/I18n/my_localizations.dart';
 import '../../constants.dart';
 import 'drawing_painter.dart';
@@ -26,13 +27,18 @@ class _RecognizerScreen extends State<RecognizerScreen> {
     super.initState();
     numberRecognizer.loadModel();
     _buildBarChartInfo();
-    Future.delayed(Duration.zero, () {
-      this._resetLabels(context);
-    });
+    SchedulerBinding.instance
+        .addPostFrameCallback((_) => _resetLabels(context));
+    // Future.delayed(Duration(seconds: 1), () {
+    //   this._resetLabels(context);
+    // });
   }
 
   @override
   Widget build(BuildContext context) {
+    headerText = MyLocalizations.of(context).drawNumberInBox;
+    footerText = MyLocalizations.of(context).letMeGuess;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -81,13 +87,6 @@ class _RecognizerScreen extends State<RecognizerScreen> {
                     },
                     onPanEnd: (details) async {
                       points.add(null);
-                      List predictions =
-                          await numberRecognizer.processCanvasPoints(points);
-                      setState(() {
-                        print(predictions);
-                        _buildBarChartInfo(recognitions: predictions);
-                        _setLabelsForGuess(predictions.first['label']);
-                      });
                     },
                     child: ClipRect(
                       child: CustomPaint(
@@ -101,66 +100,105 @@ class _RecognizerScreen extends State<RecognizerScreen> {
                 },
               ),
             ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(0, 32, 0, 64),
-                child: Container(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
-                    children: <Widget>[
-                      Center(
-                        child: Text(
-                          footerText,
-                          style: Theme.of(context).textTheme.headline5,
-                        ),
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.fromLTRB(32, 32, 32, 16),
-                          child: BarChart(
-                            BarChartData(
-                              titlesData: FlTitlesData(
-                                show: true,
-                                bottomTitles: SideTitles(
-                                    showTitles: true,
-                                    textStyle: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14),
-                                    margin: 6,
-                                    getTitles: (double value) {
-                                      return value.toInt().toString();
-                                    }),
-                                leftTitles: SideTitles(
-                                  showTitles: false,
-                                ),
-                              ),
-                              borderData: FlBorderData(
-                                show: false,
-                              ),
-                              barGroups: chartItems,
-                              // read about it in the below section
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
+                  child: CircleAvatar(
+                    radius: 24,
+                    backgroundColor: Colors.yellow,
+                    child: IconButton(
+                        icon: Icon(Icons.check_circle_outline),
+                        color: Colors.green[600],
+                        iconSize: 32,
+                        onPressed: () async {
+                          List predictions = await numberRecognizer
+                              .processCanvasPoints(points);
+                          setState(() {
+                            print(predictions);
+                            _buildBarChartInfo(recognitions: predictions);
+                            _setLabelsForGuess(predictions.first['label']);
+                          });
+                        }),
                   ),
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
+                  child: CircleAvatar(
+                    radius: 24,
+                    backgroundColor: Colors.yellow,
+                    child: IconButton(
+                        icon: Icon(Icons.delete_outline),
+                        color: Colors.red,
+                        iconSize: 32,
+                        onPressed: () async {
+                          _cleanDrawing(context);
+                        }),
+                  ),
+                ),
+              ],
             ),
+            // Expanded(
+            //   child: Padding(
+            //     padding: const EdgeInsets.fromLTRB(0, 32, 0, 64),
+            //     child: Container(
+            //       child: Column(
+            //         crossAxisAlignment: CrossAxisAlignment.stretch,
+            //         mainAxisAlignment: MainAxisAlignment.center,
+            //         mainAxisSize: MainAxisSize.max,
+            //         children: <Widget>[
+            //           Center(
+            //             child: Text(
+            //               footerText,
+            //               style: Theme.of(context).textTheme.headline5,
+            //             ),
+            //           ),
+            // Expanded(
+            //   child: Padding(
+            //     padding: EdgeInsets.fromLTRB(32, 32, 32, 16),
+            //     child: BarChart(
+            //       BarChartData(
+            //         titlesData: FlTitlesData(
+            //           show: true,
+            //           bottomTitles: SideTitles(
+            //               showTitles: true,
+            //               textStyle: TextStyle(
+            //                   color: Colors.black,
+            //                   fontWeight: FontWeight.bold,
+            //                   fontSize: 14),
+            //               margin: 6,
+            //               getTitles: (double value) {
+            //                 return value.toInt().toString();
+            //               }),
+            //           leftTitles: SideTitles(
+            //             showTitles: false,
+            //           ),
+            //         ),
+            //         borderData: FlBorderData(
+            //           show: false,
+            //         ),
+            //         barGroups: chartItems,
+            //         // read about it in the below section
+            //       ),
+            //     ),
+            //   ),
+            // )
+            //       ],
+            //     ),
+            //   ),
+            // ),
+            //  ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _cleanDrawing(context);
-        },
-        tooltip: 'Clean',
-        child: Icon(Icons.delete),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     _cleanDrawing(context);
+      //   },
+      //   tooltip: 'Clean',
+      //   child: Icon(Icons.delete),
+      // ),
     );
   }
 
@@ -168,9 +206,9 @@ class _RecognizerScreen extends State<RecognizerScreen> {
     setState(() {
       points = List();
       _buildBarChartInfo();
-      Future.delayed(Duration.zero, () {
-        this._resetLabels(context);
-      });
+//      Future.delayed(Duration.zero, () {
+      this._resetLabels(context);
+      //    });
     });
   }
 
