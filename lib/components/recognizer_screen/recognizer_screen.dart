@@ -26,12 +26,8 @@ class _RecognizerScreen extends State<RecognizerScreen> {
   void initState() {
     super.initState();
     numberRecognizer.loadModel();
-    _buildBarChartInfo();
     SchedulerBinding.instance
         .addPostFrameCallback((_) => _resetLabels(context));
-    // Future.delayed(Duration(seconds: 1), () {
-    //   this._resetLabels(context);
-    // });
   }
 
   @override
@@ -117,7 +113,6 @@ class _RecognizerScreen extends State<RecognizerScreen> {
                               .processCanvasPoints(points);
                           setState(() {
                             print(predictions);
-                            _buildBarChartInfo(recognitions: predictions);
                             _setLabelsForGuess(predictions.first['label']);
                           });
                         }),
@@ -139,76 +134,16 @@ class _RecognizerScreen extends State<RecognizerScreen> {
                 ),
               ],
             ),
-            // Expanded(
-            //   child: Padding(
-            //     padding: const EdgeInsets.fromLTRB(0, 32, 0, 64),
-            //     child: Container(
-            //       child: Column(
-            //         crossAxisAlignment: CrossAxisAlignment.stretch,
-            //         mainAxisAlignment: MainAxisAlignment.center,
-            //         mainAxisSize: MainAxisSize.max,
-            //         children: <Widget>[
-            //           Center(
-            //             child: Text(
-            //               footerText,
-            //               style: Theme.of(context).textTheme.headline5,
-            //             ),
-            //           ),
-            // Expanded(
-            //   child: Padding(
-            //     padding: EdgeInsets.fromLTRB(32, 32, 32, 16),
-            //     child: BarChart(
-            //       BarChartData(
-            //         titlesData: FlTitlesData(
-            //           show: true,
-            //           bottomTitles: SideTitles(
-            //               showTitles: true,
-            //               textStyle: TextStyle(
-            //                   color: Colors.black,
-            //                   fontWeight: FontWeight.bold,
-            //                   fontSize: 14),
-            //               margin: 6,
-            //               getTitles: (double value) {
-            //                 return value.toInt().toString();
-            //               }),
-            //           leftTitles: SideTitles(
-            //             showTitles: false,
-            //           ),
-            //         ),
-            //         borderData: FlBorderData(
-            //           show: false,
-            //         ),
-            //         barGroups: chartItems,
-            //         // read about it in the below section
-            //       ),
-            //     ),
-            //   ),
-            // )
-            //       ],
-            //     ),
-            //   ),
-            // ),
-            //  ),
           ],
         ),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     _cleanDrawing(context);
-      //   },
-      //   tooltip: 'Clean',
-      //   child: Icon(Icons.delete),
-      // ),
     );
   }
 
   void _cleanDrawing(BuildContext context) {
     setState(() {
       points = List();
-      _buildBarChartInfo();
-//      Future.delayed(Duration.zero, () {
       this._resetLabels(context);
-      //    });
     });
   }
 
@@ -218,44 +153,7 @@ class _RecognizerScreen extends State<RecognizerScreen> {
   }
 
   void _setLabelsForGuess(String guess) {
-    headerText = ""; // Empty string
+    headerText = "";
     footerText = MyLocalizations.of(context).theNumberYouDrawIs + guess;
-  }
-
-  void _buildBarChartInfo({List recognitions = const []}) {
-    // Reset the list
-    chartItems = List();
-
-    // Create as many barGroups as outputs our prediction has
-    for (var i = 0; i < kModelNubmerOutputs; i++) {
-      var barGroup = _makeGroupData(i, 0);
-      chartItems.add(barGroup);
-    }
-
-    // For each one of our predictions, attach the probability
-    // to the right index
-    for (var recognition in recognitions) {
-      final idx = recognition["index"];
-      if (0 <= idx && idx <= 9) {
-        final confidence = recognition["confidence"];
-        chartItems[idx] = _makeGroupData(idx, confidence);
-      }
-    }
-  }
-
-  BarChartGroupData _makeGroupData(int x, double y) {
-    return BarChartGroupData(x: x, barRods: [
-      BarChartRodData(
-        y: y,
-        color: kBarColor,
-        width: kChartBarWidth,
-        //       isRound: true,
-        backDrawRodData: BackgroundBarChartRodData(
-          show: true,
-          y: 1,
-          color: kBarBackgroundColor,
-        ),
-      ),
-    ]);
   }
 }
