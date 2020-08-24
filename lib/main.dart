@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:number_trainer/I18n/my_localizations.dart';
-import 'components/RecognizerScreen/recognizer_screen.dart';
+import 'package:number_trainer/components/recognizer_screen/recognizer_screen.dart';
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.

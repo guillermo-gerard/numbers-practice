@@ -13,14 +13,32 @@ class MyLocalizations {
   static Map<String, Map<String, String>> _localizedValues = {
     'en': {
       'title': 'Numbers',
+      'draw_a_number_in_the_box': 'Please draw a number in the box below',
+      'let_me_guess': 'Let me guess...',
+      'the_number_you_draw_is': 'The number you draw is ',
     },
     'es': {
       'title': 'Reconocedor de números',
+      'draw_a_number_in_the_box': 'Dibuja el numero en la caja de abajo',
+      'let_me_guess': 'Déjame adivinar...',
+      'the_number_you_draw_is': 'El número que escribiste es ',
     },
   };
 
   String get title {
     return _localizedValues[locale.languageCode]['title'];
+  }
+
+  String get drawNumberInBox {
+    return _localizedValues[locale.languageCode]['draw_a_number_in_the_box'];
+  }
+
+  String get letMeGuess {
+    return _localizedValues[locale.languageCode]['let_me_guess'];
+  }
+
+  String get theNumberYouDrawIs {
+    return _localizedValues[locale.languageCode]['the_number_you_draw_is'];
   }
 }
 
