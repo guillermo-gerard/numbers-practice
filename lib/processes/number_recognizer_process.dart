@@ -69,6 +69,7 @@ class NumberRecognizerProcess {
     // Finally, we can return our the prediction we will perform over that
     // resized image
     return predictImage(resizedImage);
+    //the result is a list of: [{confidence: 0.9999855756759644, index: 4, label: 4}]
   }
 
   Future<List> predictImage(im.Image image) async {
@@ -77,7 +78,8 @@ class NumberRecognizerProcess {
     );
   }
 
-//this one will convert the image to a list of 28x28x1, as the model in the mnist db has grayscale images
+//this one will convert the image to a list of 28x28x1, as the model in the mnist
+//db has grayscale images
   Uint8List imageToByteListFloat32(im.Image image, int inputSize) {
     var convertedBytes = Float32List(inputSize * inputSize);
     var buffer = Float32List.view(convertedBytes.buffer);

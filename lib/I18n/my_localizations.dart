@@ -16,12 +16,38 @@ class MyLocalizations {
       'draw_a_number_in_the_box': 'Please draw a number in the box below',
       'let_me_guess': 'Let me guess...',
       'the_number_you_draw_is': 'The number you draw is ',
+      'could_you_draw_a_number_': 'Could you draw a number ',
+      'zero': 'zero',
+      'one': 'one',
+      'two': 'two',
+      'three': 'three',
+      'four': 'four',
+      'five': 'five',
+      'six': 'six',
+      'seven': 'seven',
+      'eight': 'eight',
+      'nine': 'nine',
+      'excelent': 'Excelent!',
+      'try_again': 'mmmm...not quite, try to draw a',
     },
     'es': {
       'title': 'Reconocedor de números',
       'draw_a_number_in_the_box': 'Dibuja el numero en la caja de abajo',
       'let_me_guess': 'Déjame adivinar...',
       'the_number_you_draw_is': 'El número que escribiste es ',
+      'could_you_draw_a_number_': 'Puedes escribir el número ',
+      'zero': 'cero',
+      'one': 'uno',
+      'two': 'dos',
+      'three': 'tres',
+      'four': 'cuatro',
+      'five': 'cinco',
+      'six': 'seis',
+      'seven': 'siete',
+      'eight': 'ocho',
+      'nine': 'nueve',
+      'excelent': 'Excelente!',
+      'try_again': 'mmmm...no exactamente, intenta nuevamente escribir el ',
     },
   };
 
@@ -39,6 +65,58 @@ class MyLocalizations {
 
   String get theNumberYouDrawIs {
     return _localizedValues[locale.languageCode]['the_number_you_draw_is'];
+  }
+
+  String get couldYouDrawANumber_ {
+    return _localizedValues[locale.languageCode]['could_you_draw_a_number_'];
+  }
+
+  String get zero {
+    return _localizedValues[locale.languageCode]['zero'];
+  }
+
+  String get one {
+    return _localizedValues[locale.languageCode]['one'];
+  }
+
+  String get two {
+    return _localizedValues[locale.languageCode]['two'];
+  }
+
+  String get three {
+    return _localizedValues[locale.languageCode]['three'];
+  }
+
+  String get four {
+    return _localizedValues[locale.languageCode]['four'];
+  }
+
+  String get five {
+    return _localizedValues[locale.languageCode]['five'];
+  }
+
+  String get six {
+    return _localizedValues[locale.languageCode]['six'];
+  }
+
+  String get seven {
+    return _localizedValues[locale.languageCode]['seven'];
+  }
+
+  String get eight {
+    return _localizedValues[locale.languageCode]['eight'];
+  }
+
+  String get nine {
+    return _localizedValues[locale.languageCode]['nine'];
+  }
+
+  String get excelent {
+    return _localizedValues[locale.languageCode]['excelent'];
+  }
+
+  String get tryAgain {
+    return _localizedValues[locale.languageCode]['try_again'];
   }
 }
 

@@ -5,6 +5,7 @@ import '../../constants.dart';
 import 'drawing_painter.dart';
 import 'package:number_trainer/Processes/number_recognizer_process.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'dart:math' show Random;
 
 class RecognizerScreen extends StatefulWidget {
   RecognizerScreen({Key key, this.title}) : super(key: key);
@@ -21,19 +22,21 @@ class _RecognizerScreen extends State<RecognizerScreen> {
   List<BarChartGroupData> chartItems = List();
   String headerText = 'Header placeholder';
   String footerText = 'Footer placeholder';
+  var randomizer = new Random();
+  int secretNumber;
 
   @override
   void initState() {
     super.initState();
     numberRecognizer.loadModel();
     SchedulerBinding.instance
-        .addPostFrameCallback((_) => _resetLabels(context));
+        .addPostFrameCallback((_) => _restartGame(context));
   }
 
   @override
   Widget build(BuildContext context) {
-    headerText = MyLocalizations.of(context).drawNumberInBox;
-    footerText = MyLocalizations.of(context).letMeGuess;
+    // headerText = MyLocalizations.of(context).drawNumberInBox;
+    // footerText = MyLocalizations.of(context).letMeGuess;
 
     return Scaffold(
       appBar: AppBar(
@@ -114,6 +117,14 @@ class _RecognizerScreen extends State<RecognizerScreen> {
                           setState(() {
                             print(predictions);
                             _setLabelsForGuess(predictions.first['label']);
+                            if (predictions.first['confidence'] > 0.99995 &&
+                                predictions.first['index'] == secretNumber) {
+                              headerText = MyLocalizations.of(context).excelent;
+                            } else {
+                              headerText =
+                                  MyLocalizations.of(context).tryAgain +
+                                      getSecretNumberText(secretNumber);
+                            }
                           });
                         }),
                   ),
@@ -128,7 +139,7 @@ class _RecognizerScreen extends State<RecognizerScreen> {
                         color: Colors.red,
                         iconSize: 32,
                         onPressed: () async {
-                          _cleanDrawing(context);
+                          _restartGame(context);
                         }),
                   ),
                 ),
@@ -140,20 +151,54 @@ class _RecognizerScreen extends State<RecognizerScreen> {
     );
   }
 
+  _restartGame(BuildContext context) {
+    secretNumber = randomizer.nextInt(10);
+    var secretNumberText = getSecretNumberText(secretNumber);
+    this._resetLabels(context, secretNumberText);
+    _cleanDrawing(context);
+  }
+
+  void _resetLabels(BuildContext context, String secretNumber) {
+    headerText =
+        MyLocalizations.of(context).couldYouDrawANumber_ + secretNumber + "?";
+    footerText = MyLocalizations.of(context).letMeGuess;
+  }
+
   void _cleanDrawing(BuildContext context) {
     setState(() {
       points = List();
-      this._resetLabels(context);
     });
-  }
-
-  void _resetLabels(BuildContext context) {
-    headerText = MyLocalizations.of(context).drawNumberInBox;
-    footerText = MyLocalizations.of(context).letMeGuess;
   }
 
   void _setLabelsForGuess(String guess) {
     headerText = "";
     footerText = MyLocalizations.of(context).theNumberYouDrawIs + guess;
+  }
+
+  String getSecretNumberText(int secretNumber) {
+    switch (secretNumber) {
+      case 0:
+        return MyLocalizations.of(context).zero;
+      case 1:
+        return MyLocalizations.of(context).one;
+      case 2:
+        return MyLocalizations.of(context).two;
+      case 3:
+        return MyLocalizations.of(context).three;
+      case 4:
+        return MyLocalizations.of(context).four;
+      case 5:
+        return MyLocalizations.of(context).five;
+      case 6:
+        return MyLocalizations.of(context).six;
+      case 7:
+        return MyLocalizations.of(context).seven;
+      case 8:
+        return MyLocalizations.of(context).eight;
+      case 9:
+        return MyLocalizations.of(context).nine;
+      default:
+        return MyLocalizations.of(context).zero;
+    }
   }
 }
