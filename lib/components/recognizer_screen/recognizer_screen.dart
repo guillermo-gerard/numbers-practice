@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:number_trainer/I18n/my_localizations.dart';
 import '../../constants.dart';
 import 'drawing_painter.dart';
@@ -25,19 +26,28 @@ class _RecognizerScreen extends State<RecognizerScreen> {
   var randomizer = new Random();
   int secretNumber;
 
+  FlutterTts flutterTts = FlutterTts();
+
   @override
   void initState() {
     super.initState();
     numberRecognizer.loadModel();
-    SchedulerBinding.instance
-        .addPostFrameCallback((_) => _restartGame(context));
+    SchedulerBinding.instance.addPostFrameCallback((_) => initGame());
+  }
+
+  void initGame() async {
+    _restartGame(context);
+    //List<dynamic> languages = await flutterTts.getLanguages;
+    var local = MyLocalizations.of(context).local;
+    await flutterTts.setLanguage(
+        await flutterTts.isLanguageAvailable(local) ? local : "en-US");
+    await flutterTts.setSpeechRate(1.0);
+    await flutterTts.setVolume(1.0);
+    await flutterTts.setPitch(1.0);
   }
 
   @override
   Widget build(BuildContext context) {
-    // headerText = MyLocalizations.of(context).drawNumberInBox;
-    // footerText = MyLocalizations.of(context).letMeGuess;
-
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -116,7 +126,6 @@ class _RecognizerScreen extends State<RecognizerScreen> {
                               .processCanvasPoints(points);
                           setState(() {
                             print(predictions);
-                            _setLabelsForGuess(predictions.first['label']);
                             if (predictions.first['confidence'] > 0.99995 &&
                                 predictions.first['index'] == secretNumber) {
                               headerText = MyLocalizations.of(context).excelent;
@@ -125,6 +134,7 @@ class _RecognizerScreen extends State<RecognizerScreen> {
                                   MyLocalizations.of(context).tryAgain +
                                       getSecretNumberText(secretNumber);
                             }
+                            flutterTts.speak(headerText);
                           });
                         }),
                   ),
@@ -158,21 +168,16 @@ class _RecognizerScreen extends State<RecognizerScreen> {
     _cleanDrawing(context);
   }
 
-  void _resetLabels(BuildContext context, String secretNumber) {
-    headerText =
-        MyLocalizations.of(context).couldYouDrawANumber_ + secretNumber + "?";
-    footerText = MyLocalizations.of(context).letMeGuess;
+  void _resetLabels(BuildContext context, String secretNumber) async {
+    var headerTextNoNumber = MyLocalizations.of(context).couldYouDrawANumber_;
+    headerText = headerTextNoNumber + secretNumber.toUpperCase() + "?";
+    flutterTts.speak(headerText);
   }
 
   void _cleanDrawing(BuildContext context) {
     setState(() {
       points = List();
     });
-  }
-
-  void _setLabelsForGuess(String guess) {
-    headerText = "";
-    footerText = MyLocalizations.of(context).theNumberYouDrawIs + guess;
   }
 
   String getSecretNumberText(int secretNumber) {

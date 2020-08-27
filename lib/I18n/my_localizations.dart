@@ -12,6 +12,7 @@ class MyLocalizations {
 
   static Map<String, Map<String, String>> _localizedValues = {
     'en': {
+      'local': 'en-US',
       'title': 'Numbers',
       'draw_a_number_in_the_box': 'Please draw a number in the box below',
       'let_me_guess': 'Let me guess...',
@@ -31,6 +32,7 @@ class MyLocalizations {
       'try_again': 'mmmm...not quite, try to draw a',
     },
     'es': {
+      'local': 'es-AR',
       'title': 'Reconocedor de números',
       'draw_a_number_in_the_box': 'Dibuja el numero en la caja de abajo',
       'let_me_guess': 'Déjame adivinar...',
@@ -50,6 +52,10 @@ class MyLocalizations {
       'try_again': 'mmmm...no exactamente, intenta nuevamente escribir el ',
     },
   };
+
+  String get local {
+    return _localizedValues[locale.languageCode]['local'];
+  }
 
   String get title {
     return _localizedValues[locale.languageCode]['title'];
