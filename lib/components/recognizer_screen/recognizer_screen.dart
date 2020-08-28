@@ -3,10 +3,13 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:number_trainer/I18n/my_localizations.dart';
 import '../../constants.dart';
+import 'circle_button_widget.dart';
 import 'drawing_painter.dart';
 import 'package:number_trainer/Processes/number_recognizer_process.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'dart:math' show Random;
+import 'dart:math' show Random, pi;
+import 'package:confetti/confetti.dart';
+import 'package:number_trainer/components/recognizer_screen/my_confetti_widget.dart';
 
 class RecognizerScreen extends StatefulWidget {
   RecognizerScreen({Key key, this.title}) : super(key: key);
@@ -25,18 +28,31 @@ class _RecognizerScreen extends State<RecognizerScreen> {
   String footerText = 'Footer placeholder';
   var randomizer = new Random();
   int secretNumber;
+  ConfettiController _confettiControllerBottomLeft;
+  ConfettiController _confettiControllerBottomRight;
 
   FlutterTts flutterTts = FlutterTts();
 
   @override
   void initState() {
     super.initState();
+    _confettiControllerBottomLeft =
+        ConfettiController(duration: const Duration(seconds: 2));
+    _confettiControllerBottomRight =
+        ConfettiController(duration: const Duration(seconds: 2));
     numberRecognizer.loadModel();
     SchedulerBinding.instance.addPostFrameCallback((_) => initGame());
   }
 
+  @override
+  void dispose() {
+    _confettiControllerBottomLeft.dispose();
+    _confettiControllerBottomRight.dispose();
+    super.dispose();
+  }
+
   void initGame() async {
-    _restartGame(context);
+    _restartGame();
     //List<dynamic> languages = await flutterTts.getLanguages;
     var local = MyLocalizations.of(context).local;
     await flutterTts.setLanguage(
@@ -112,47 +128,19 @@ class _RecognizerScreen extends State<RecognizerScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
-                  child: CircleAvatar(
-                    radius: 24,
-                    backgroundColor: Colors.yellow,
-                    child: IconButton(
-                        icon: Icon(Icons.check_circle_outline),
-                        color: Colors.green[600],
-                        iconSize: 32,
-                        onPressed: () async {
-                          List predictions = await numberRecognizer
-                              .processCanvasPoints(points);
-                          setState(() {
-                            print(predictions);
-                            if (predictions.first['confidence'] > 0.99995 &&
-                                predictions.first['index'] == secretNumber) {
-                              headerText = MyLocalizations.of(context).excelent;
-                            } else {
-                              headerText =
-                                  MyLocalizations.of(context).tryAgain +
-                                      getSecretNumberText(secretNumber);
-                            }
-                            flutterTts.speak(headerText);
-                          });
-                        }),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
-                  child: CircleAvatar(
-                    radius: 24,
-                    backgroundColor: Colors.yellow,
-                    child: IconButton(
-                        icon: Icon(Icons.delete_outline),
-                        color: Colors.red,
-                        iconSize: 32,
-                        onPressed: () async {
-                          _restartGame(context);
-                        }),
-                  ),
-                ),
+                CircleButtonWidget(_testGameResult, Icons.check_circle_outline,
+                    Colors.green[600]),
+                CircleButtonWidget(
+                    _restartGame, Icons.delete_outline, Colors.red),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                MyConfettiWidget(-pi / 3, Alignment.bottomLeft,
+                    confettiController: _confettiControllerBottomLeft),
+                MyConfettiWidget(4 * pi / 3, Alignment.bottomRight,
+                    confettiController: _confettiControllerBottomRight),
               ],
             ),
           ],
@@ -161,7 +149,24 @@ class _RecognizerScreen extends State<RecognizerScreen> {
     );
   }
 
-  _restartGame(BuildContext context) {
+  void _testGameResult() async {
+    List predictions = await numberRecognizer.processCanvasPoints(points);
+    setState(() {
+      print(predictions);
+      if (predictions.first['confidence'] > 0.99995 &&
+          predictions.first['index'] == secretNumber) {
+        headerText = MyLocalizations.of(context).excelent;
+        _confettiControllerBottomRight.play();
+        _confettiControllerBottomLeft.play();
+      } else {
+        headerText = MyLocalizations.of(context).tryAgain +
+            getSecretNumberText(secretNumber);
+      }
+      flutterTts.speak(headerText);
+    });
+  }
+
+  _restartGame() {
     secretNumber = randomizer.nextInt(10);
     var secretNumberText = getSecretNumberText(secretNumber);
     this._resetLabels(context, secretNumberText);
