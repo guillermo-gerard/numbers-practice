@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:number_trainer/I18n/my_localizations.dart';
-import '../../constants.dart';
-import 'circle_button_widget.dart';
-import 'drawing_painter.dart';
-import 'package:number_trainer/Processes/number_recognizer_process.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'dart:math' show Random, pi;
 import 'package:confetti/confetti.dart';
-import 'package:number_trainer/components/recognizer_screen/my_confetti_widget.dart';
+
+import '../../I18n/my_localizations.dart';
+import '../../constants.dart';
+import '../../Processes/number_recognizer_process.dart';
+import 'circle_button_widget.dart';
+import 'drawing_painter.dart';
+import 'my_confetti_widget.dart';
 
 class RecognizerScreen extends StatefulWidget {
   RecognizerScreen({Key key, this.title}) : super(key: key);
@@ -30,7 +31,6 @@ class _RecognizerScreen extends State<RecognizerScreen> {
   int secretNumber;
   ConfettiController _confettiControllerBottomLeft;
   ConfettiController _confettiControllerBottomRight;
-
   FlutterTts flutterTts = FlutterTts();
 
   @override
