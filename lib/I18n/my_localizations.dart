@@ -17,7 +17,7 @@ class MyLocalizations {
       'draw_a_number_in_the_box': 'Please draw a number in the box below',
       'let_me_guess': 'Let me guess...',
       'the_number_you_draw_is': 'The number you draw is ',
-      'could_you_draw_a_number_': 'Could you draw a number ',
+      'could_you_draw_a_number_': 'Draw a ',
       'zero': 'zero',
       'one': 'one',
       'two': 'two',
@@ -29,7 +29,7 @@ class MyLocalizations {
       'eight': 'eight',
       'nine': 'nine',
       'excelent': 'Excelent!',
-      'try_again': 'mmmm...not quite, try to draw a',
+      'try_again': 'Almost there, try to draw a ',
     },
     'es': {
       'local': 'es-AR',
@@ -37,7 +37,7 @@ class MyLocalizations {
       'draw_a_number_in_the_box': 'Dibuja el numero en la caja de abajo',
       'let_me_guess': 'Déjame adivinar...',
       'the_number_you_draw_is': 'El número que escribiste es ',
-      'could_you_draw_a_number_': 'Puedes escribir el número ',
+      'could_you_draw_a_number_': 'Escribe el número ',
       'zero': 'cero',
       'one': 'uno',
       'two': 'dos',
@@ -49,7 +49,7 @@ class MyLocalizations {
       'eight': 'ocho',
       'nine': 'nueve',
       'excelent': 'Excelente!',
-      'try_again': 'mmmm...no exactamente, intenta nuevamente escribir el ',
+      'try_again': 'Casi lo tienes, intenta nuevamente escribir el ',
     },
   };
 
@@ -73,7 +73,7 @@ class MyLocalizations {
     return _localizedValues[locale.languageCode]['the_number_you_draw_is'];
   }
 
-  String get couldYouDrawANumber_ {
+  String get couldYouDrawANumber {
     return _localizedValues[locale.languageCode]['could_you_draw_a_number_'];
   }
 
