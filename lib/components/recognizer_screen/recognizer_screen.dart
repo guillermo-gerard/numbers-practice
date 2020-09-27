@@ -4,12 +4,14 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'dart:math' show Random, pi;
 import 'package:confetti/confetti.dart';
+import 'package:number_trainer/components/recognizer_screen/recognizer_header_widget.dart';
 
 import '../../I18n/my_localizations.dart';
 import '../../constants.dart';
 import '../../Processes/number_recognizer_process.dart';
 import 'circle_button_widget.dart';
 import 'drawing_painter.dart';
+import 'empty-space-widget.dart';
 import 'my_confetti_widget.dart';
 
 class RecognizerScreen extends StatefulWidget {
@@ -25,8 +27,8 @@ class _RecognizerScreen extends State<RecognizerScreen> {
   List<Offset> points = List();
   NumberRecognizerProcess numberRecognizer = NumberRecognizerProcess();
   List<BarChartGroupData> chartItems = List();
-  String headerText = 'Header placeholder';
-  String footerText = 'Footer placeholder';
+  String headerText = '\r\n\r\n\r\n';
+
   var randomizer = new Random();
   int secretNumber;
   ConfettiController _confettiControllerBottomLeft;
@@ -73,19 +75,8 @@ class _RecognizerScreen extends State<RecognizerScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Expanded(
-              flex: 1,
-              child: Container(
-                padding: EdgeInsets.all(16),
-                color: Colors.red,
-                alignment: Alignment.center,
-                child: Text(
-                  headerText,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headline5,
-                ),
-              ),
-            ),
+            RecognizerHeader(headerText: headerText),
+            EmptySpaceWidget(),
             Container(
               decoration: new BoxDecoration(
                 border: new Border.all(
@@ -125,6 +116,10 @@ class _RecognizerScreen extends State<RecognizerScreen> {
                 },
               ),
             ),
+            Expanded(
+              flex: 1,
+              child: Container(),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
@@ -133,6 +128,10 @@ class _RecognizerScreen extends State<RecognizerScreen> {
                 CircleButtonWidget(
                     _restartGame, Icons.delete_outline, Colors.red),
               ],
+            ),
+            Expanded(
+              flex: 1,
+              child: Container(),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -174,7 +173,7 @@ class _RecognizerScreen extends State<RecognizerScreen> {
   }
 
   void _resetLabels(BuildContext context, String secretNumber) async {
-    var headerTextNoNumber = MyLocalizations.of(context).couldYouDrawANumber_;
+    var headerTextNoNumber = MyLocalizations.of(context).couldYouDrawANumber;
     headerText = headerTextNoNumber + secretNumber.toUpperCase() + "?";
     flutterTts.speak(headerText);
   }
